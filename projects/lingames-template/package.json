@@ -1,0 +1,9 @@
+{
+    "private": true,
+    "scripts": {
+        "p": "cargo publish --allow-dirty"
+    },
+    "dependencies": {
+
+    }
+}

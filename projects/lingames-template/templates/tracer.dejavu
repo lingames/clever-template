@@ -1,0 +1,56 @@
+import {CeTracer} from "@lingames/clever-tracer";
+
+/**
+See {@link https://api.clever-tracer.com/v1/report/version events}.
+*/
+export enum {{ data.channel_type()|pascal_case }} {
+	{% for channel in data.channels %}
+	{{ channel.name|upper_case }} = '{{ channel.value }}',
+	{% endfor %}
+}
+
+/**
+See {@link https://api.clever-tracer.com/v1/report/version events}.
+*/
+export enum {{ data.version_type()|pascal_case }} {
+	{% for version in data.versions %}
+	{{ version.name|upper_case }} = '{{ version.value }}',
+	{% endfor %}
+}
+
+/**
+See {@link https://api.clever-tracer.com/v1/report/version events}.
+*/
+export enum {{ data.event_type()|pascal_case }} {
+	{% for event in data.events %}
+	{{ event.name|upper_case }} = '{{ event.value }}',
+	{% endfor %}
+}
+
+/**
+@description
+upload_data
+@example
+```ts
+const tracer = new {{ data.tracer_type()|pascal_case }}()
+// Use environment variables or macros to dispatch
+tracer.version = {{ data.version_type()|pascal_case }}.v1_0_0
+tracer.channel = {{ data.channel_type()|pascal_case }}.WECHAT
+// report the event
+tracer.reportCustomEvent({})
+```
+*/
+export class {{ data.tracer_type()|pascal_case }} extends CeTracer {
+	public override channel?: {{ data.channel_type()|pascal_case }} | string = undefined
+	public override version?: {{ data.version_type()|pascal_case }} | string = undefined
+
+	{% for event in data.events %}
+	/**
+	* report the {{ event.name|upper_case }} event
+	* @param custom custom
+	*/
+	{{ event.report_function()|camel_case }}(custom?: any) {
+		this.callEventReport({{ data.event_type()|pascal_case }}.{{ event.name|upper_case }}, custom)
+	}
+	{% endfor %}
+}
